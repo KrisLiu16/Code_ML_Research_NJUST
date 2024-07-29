@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error, r2_score
 from .model import train_lasso, train_ridge
+
 
 def train_and_evaluate(x, y, lasso_alphas, ridge_alphas, test_size=0.1):
     # 手动拆分训练集和测试集
@@ -30,4 +32,9 @@ def train_and_evaluate(x, y, lasso_alphas, ridge_alphas, test_size=0.1):
     # 合并实际值
     y_combined = np.concatenate((y_train, y_test))
 
-    return lasso, y_pred_lasso, y_pred_ridge, y_combined, y_train
+    # 计算特征权重比例（LASSO和Ridge）
+    lasso_weight_proportions = np.abs(lasso.coef_) / np.sum(np.abs(lasso.coef_)) * 100
+    ridge_weight_proportions = np.abs(ridge.coef_) / np.sum(np.abs(ridge.coef_)) * 100
+
+    return lasso, y_pred_lasso, y_pred_ridge, y_combined, y_train, None, lasso_weight_proportions, ridge_weight_proportions
+

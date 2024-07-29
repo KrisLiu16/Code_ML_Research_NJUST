@@ -2,11 +2,11 @@ import plotly.graph_objs as go
 import plotly.offline as pyo
 import matplotlib.pyplot as plt
 import numpy as np
-
+import os
 def rgb_to_hex(rgb):
     return '#%02x%02x%02x' % (int(rgb[0]*255), int(rgb[1]*255), int(rgb[2]*255))
 
-def create_plot(y_combined, y_pred_lasso, y_pred_ridge, ts_predictions, y_train, feature_number, X):
+def create_plot(y_combined, y_pred_lasso, y_pred_ridge, ts_predictions, y_train, feature_number, X, result_folder):
     # 创建图表数据
     actual_trace = go.Scatter(
         x=list(range(len(y_combined))),
@@ -76,6 +76,27 @@ def create_plot(y_combined, y_pred_lasso, y_pred_ridge, ts_predictions, y_train,
         yaxis=dict(title='值')
     )
 
-    # 创建并显示图表
+    # 创建并保存图表
     fig = go.Figure(data=data, layout=layout)
-    pyo.plot(fig, filename='regression_predictions.html', auto_open=False)
+    result_file = os.path.join(result_folder, 'regression_predictions.html')  # 拼接文件路径
+    pyo.plot(fig, filename=result_file, auto_open=False)
+
+def plot_feature_weights(weights, feature_names, model_name, result_folder):
+    # 创建特征权重条形图
+    trace = go.Bar(
+        x=feature_names,
+        y=weights,
+        marker=dict(color='skyblue'),
+        name=f'{model_name} 特征权重'
+    )
+
+    layout = go.Layout(
+        title=f'{model_name} 特征权重',
+        xaxis=dict(title='特征'),
+        yaxis=dict(title='权重占比 (%)'),
+        showlegend=False
+    )
+
+    fig = go.Figure(data=[trace], layout=layout)
+    result_file = os.path.join(result_folder, f'{model_name}_feature_weights.html')  # 拼接文件路径
+    pyo.plot(fig, filename=result_file, auto_open=False)

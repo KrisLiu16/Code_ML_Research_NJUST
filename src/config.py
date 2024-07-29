@@ -6,5 +6,6 @@ config = {
     "feature_number": 3,
     "lasso_alphas": np.logspace(-5, 5, 200),
     "ridge_alphas": np.logspace(-5, 5, 200),
-    "test_size": 0.1
+    "test_size": 0.1,
+    "result_folder": "result"  # 添加结果文件夹配置项
 }
